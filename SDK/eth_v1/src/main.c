@@ -6,7 +6,6 @@
 #include "xparameters.h"
 #include "netif/xadapter.h"
 
-
 #define EEPROM_ADDRESS 0x54
 
 XGpio GpioOutput;
@@ -56,13 +55,9 @@ int main() {
 	xil_printf("\n\r");
 	xil_printf("UART test done\n\r");
 
-	xil_printf("GPIO led test start\n\r");
 	GPIO_led_test(8);
-	xil_printf("GPIO led test done\n\r");
 
-	xil_printf("EEPROM test start\n\r");
-	EEPROM_test(EEPROM_ADDRESS, 16);
-	xil_printf("EEPROM test done\n\r");
+	xil_printf("EEPROM test done, errors = %d\n\r", EEPROM_test(EEPROM_ADDRESS, 16));
 
 
 	u16 DeviceId = 0;
@@ -95,15 +90,6 @@ int main() {
 	}
 	netif_set_default(echo_netif);
 
-	/* Create a new DHCP client for this interface.
-	 * Note: you must call dhcp_fine_tmr() and dhcp_coarse_tmr() at
-	 * the predefined regular intervals after starting the client.
-	 */
-	/* dhcp_start(echo_netif); */
-
-	/* now enable interrupts */
-	//platform_enable_interrupts();
-
 	/* specify that the network if is up */
 	netif_set_up(echo_netif);
 
@@ -116,15 +102,10 @@ int main() {
 		transfer_data();
 	}
   
+
+
 	/* never reached */
 	cleanup_platform();
-
-
-
-
-
-
-
 	return 0;
 }
 
@@ -157,7 +138,7 @@ int EEPROM_test(Xuint32 eeprom_address, Xuint32 page_size){
 	unsigned bytes_written;
 	unsigned bytes_read;
 	unsigned k,j;
-
+	int err = 0;
 
 	u8 write_buffer[PAGE_SIZE];
 	u8 read_buffer[PAGE_SIZE];
@@ -165,7 +146,7 @@ int EEPROM_test(Xuint32 eeprom_address, Xuint32 page_size){
 	addr_t address = 125;
 
 	for (k = 0; k < PAGE_SIZE; k++) {
-		write_buffer[k] = k*2;
+		write_buffer[k] = 0x55;
 		read_buffer[k] = 0;
 	}
 
@@ -175,11 +156,13 @@ int EEPROM_test(Xuint32 eeprom_address, Xuint32 page_size){
 	bytes_read = eeprom_read_byte(address, read_buffer, page_size, eeprom_address);
 	if (bytes_read != page_size) return XST_FAILURE;
 
-	xil_printf("EEPROM read data:\r\n");
 	for (j = 0; j < bytes_read; ++j){
-		xil_printf("%d : 0x%x\r\n", j, read_buffer[j]);
+		if (read_buffer[j] != write_buffer[j]) {
+			xil_printf("Error: read 0x%x != write 0x%x\r\n", read_buffer[j], write_buffer[j]);
+			err++;
+		}
 	}
-	return XST_SUCCESS;
+	return err;
 }
 
 

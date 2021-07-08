@@ -51,6 +51,7 @@ void xadapter_timer_handler(void *p) {
 	XIntc_AckIntr(XPAR_INTC_0_BASEADDR, PLATFORM_TIMER_INTERRUPT_MASK);
 }
 
+
 void microblaze_setup_interrupts() {
 	XIntc *intcp;
 	intcp = &intc;
