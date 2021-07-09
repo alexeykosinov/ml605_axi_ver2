@@ -10,7 +10,7 @@
 
 XGpio GpioOutput;
 void GPIO_led_test(Xuint16 GpioWidth);
-int EEPROM_test(Xuint32 eeprom_address, Xuint32 page_size);
+
 
 /* defined by each RAW mode application */
 void print_app_header();
@@ -50,15 +50,16 @@ int main() {
 	int i;
 	for(i = 0; i < 6; ++i){
 		xil_printf("%d ", i);
-		msleep(250);
+		msleep(450);
 	}
 	xil_printf("\n\r");
 	xil_printf("UART test done\n\r");
 
 	GPIO_led_test(8);
 
-	xil_printf("EEPROM test done, errors = %d\n\r", EEPROM_test(EEPROM_ADDRESS, 16));
+	xil_printf("EEPROM test done, errors = %d\n\r", eeprom_test(EEPROM_ADDRESS, 16));
 
+	
 
 	u16 DeviceId = 0;
 	u32 TotalErrors = 0;
@@ -74,9 +75,9 @@ int main() {
 
 	/* ETHERNET */
 	/* initliaze IP addresses to be used */
-	IP4_ADDR(&ipaddr,  10, 11,   0, 153);
-	IP4_ADDR(&netmask, 255, 255, 255,  0);
-	IP4_ADDR(&gw,      10, 11,   0,  40);
+	IP4_ADDR(&ipaddr,  10, 11, 0, 153);
+	IP4_ADDR(&netmask, 255, 255, 255, 0);
+	IP4_ADDR(&gw,      10, 11, 0, 40);
 
 	print_app_header();
 	print_ip_settings(&ipaddr, &netmask, &gw);
@@ -111,8 +112,8 @@ int main() {
 
 void GPIO_led_test(Xuint16 GpioWidth) {
 
-  Xuint16 LedBit;
-  Xuint16 LedLoop;
+  u8 LedBit;
+  u8 LedLoop;
 
   int numTimes = 6;
 
@@ -132,38 +133,6 @@ void GPIO_led_test(Xuint16 GpioWidth) {
   }
 }
 
-int EEPROM_test(Xuint32 eeprom_address, Xuint32 page_size){
-
-	/* EEPROM TEST*/
-	unsigned bytes_written;
-	unsigned bytes_read;
-	unsigned k,j;
-	int err = 0;
-
-	u8 write_buffer[PAGE_SIZE];
-	u8 read_buffer[PAGE_SIZE];
-
-	addr_t address = 125;
-
-	for (k = 0; k < PAGE_SIZE; k++) {
-		write_buffer[k] = 0x55;
-		read_buffer[k] = 0;
-	}
-
-	bytes_written = eeprom_write_byte(address, write_buffer, page_size, 0, eeprom_address);
-	if (bytes_written != page_size) return XST_FAILURE;
-
-	bytes_read = eeprom_read_byte(address, read_buffer, page_size, eeprom_address);
-	if (bytes_read != page_size) return XST_FAILURE;
-
-	for (j = 0; j < bytes_read; ++j){
-		if (read_buffer[j] != write_buffer[j]) {
-			xil_printf("Error: read 0x%x != write 0x%x\r\n", read_buffer[j], write_buffer[j]);
-			err++;
-		}
-	}
-	return err;
-}
 
 
 

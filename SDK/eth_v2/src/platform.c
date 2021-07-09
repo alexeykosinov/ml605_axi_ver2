@@ -27,10 +27,6 @@ void disable_caches() {
     Xil_ICacheDisable();
 }
 
-void init_uart(){
-
-}
-
 void timer_callback(){
 	/* we need to call tcp_fasttmr & tcp_slowtmr at intervals specified by lwIP.
 	 * It is not important that the timing is absoluetly accurate.
@@ -77,8 +73,6 @@ void microblaze_setup_interrupts() {
 	/* Register Timer handler */
 	XIntc_RegisterHandler(XPAR_INTC_0_BASEADDR, PLATFORM_TIMER_INTERRUPT_INTR,(XInterruptHandler)xadapter_timer_handler, 0);
 
-
-
 	XIntc_Enable(intcp, PLATFORM_TIMER_INTERRUPT_INTR);
 	XIntc_Enable(intcp, XPAR_INTC_0_AXIETHERNET_0_VEC_ID);
 
@@ -90,7 +84,6 @@ void init_platform() {
     enable_caches();
     microblaze_setup_interrupts();
     microblaze_enable_interrupts();
-    init_uart();
 }
 
 void cleanup_platform(){
