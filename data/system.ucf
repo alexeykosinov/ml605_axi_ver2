@@ -67,14 +67,14 @@ NET  "ddr3_ras_n"                               IOSTANDARD = SSTL15;
 NET  "ddr3_cas_n"                               IOSTANDARD = SSTL15;
 NET  "ddr3_we_n"                                IOSTANDARD = SSTL15;
 NET  "ddr3_reset_n"                             IOSTANDARD = SSTL15;
-NET  "ddr3_cke"                              IOSTANDARD = SSTL15;
-NET  "ddr3_odt"                              IOSTANDARD = SSTL15;
-NET  "ddr3_cs_n"                             IOSTANDARD = SSTL15;
+NET  "ddr3_cke"                                 IOSTANDARD = SSTL15;
+NET  "ddr3_odt"                                 IOSTANDARD = SSTL15;
+NET  "ddr3_cs_n"                                IOSTANDARD = SSTL15;
 NET  "ddr3_dm[*]"                               IOSTANDARD = SSTL15;
 NET  "ddr3_dqs_p[*]"                            IOSTANDARD = DIFF_SSTL15_T_DCI;
 NET  "ddr3_dqs_n[*]"                            IOSTANDARD = DIFF_SSTL15_T_DCI;
-NET  "ddr3_ck_p"                             IOSTANDARD = DIFF_SSTL15;
-NET  "ddr3_ck_n"                             IOSTANDARD = DIFF_SSTL15;
+NET  "ddr3_ck_p"                                IOSTANDARD = DIFF_SSTL15;
+NET  "ddr3_ck_n"                                IOSTANDARD = DIFF_SSTL15;
 
 ###############################################################################
 #DCI_CASCADING
@@ -172,9 +172,9 @@ NET  "ddr3_ras_n"                                LOC = "L19" ;          #Bank 36
 NET  "ddr3_cas_n"                                LOC = "C17" ;          #Bank 36
 NET  "ddr3_we_n"                                 LOC = "B17" ;          #Bank 36
 NET  "ddr3_reset_n"                              LOC = "E18" ;          #Bank 36
-NET  "ddr3_cke"                               LOC = "M18" ;          #Bank 36
-NET  "ddr3_odt"                               LOC = "F18" ;          #Bank 36
-NET  "ddr3_cs_n"                              LOC = "K18" ;          #Bank 36
+NET  "ddr3_cke"                                  LOC = "M18" ;          #Bank 36
+NET  "ddr3_odt"                                  LOC = "F18" ;          #Bank 36
+NET  "ddr3_cs_n"                                 LOC = "K18" ;          #Bank 36
 NET  "ddr3_dm[0]"                                LOC = "E11" ;          #Bank 35
 NET  "ddr3_dm[1]"                                LOC = "B11" ;          #Bank 35
 NET  "ddr3_dm[2]"                                LOC = "E14" ;          #Bank 35
@@ -199,8 +199,8 @@ NET  "ddr3_dqs_p[6]"                             LOC = "H27" ;          #Bank 25
 NET  "ddr3_dqs_n[6]"                             LOC = "G28" ;          #Bank 25
 NET  "ddr3_dqs_p[7]"                             LOC = "C30" ;          #Bank 25
 NET  "ddr3_dqs_n[7]"                             LOC = "D30" ;          #Bank 25
-NET  "ddr3_ck_p"                              LOC = "G18" ;          #Bank 36
-NET  "ddr3_ck_n"                              LOC = "H18" ;          #Bank 36
+NET  "ddr3_ck_p"                                 LOC = "G18" ;          #Bank 36
+NET  "ddr3_ck_n"                                 LOC = "H18" ;          #Bank 36
 
 
 ##################################################################################################
@@ -225,14 +225,14 @@ CONFIG PROHIBIT = C29,M12;
 ######################################################################################
 
 ##Site: C29 -- Bank 25
-INST "DDR3_SDRAM/DDR3_SDRAM/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_oserdes_rsync" LOC = "OLOGIC_X1Y139";
-INST "DDR3_SDRAM/DDR3_SDRAM/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_odelay_rsync" LOC = "IODELAY_X1Y139";
-INST "DDR3_SDRAM/DDR3_SDRAM/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_bufr_rsync" LOC = "BUFR_X1Y6";
+INST "DDR3_SDRAM/DDR3_SDRAM/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_oserdes_rsync"  LOC = "OLOGIC_X1Y139";
+INST "DDR3_SDRAM/DDR3_SDRAM/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_odelay_rsync"   LOC = "IODELAY_X1Y139";
+INST "DDR3_SDRAM/DDR3_SDRAM/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_bufr_rsync"     LOC = "BUFR_X1Y6";
 
 ##Site: M12 -- Bank 35
-INST "DDR3_SDRAM/DDR3_SDRAM/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_oserdes_rsync" LOC = "OLOGIC_X2Y139";
-INST "DDR3_SDRAM/DDR3_SDRAM/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_odelay_rsync" LOC = "IODELAY_X2Y139";
-INST "DDR3_SDRAM/DDR3_SDRAM/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_bufr_rsync" LOC = "BUFR_X2Y6";
+INST "DDR3_SDRAM/DDR3_SDRAM/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_oserdes_rsync"  LOC = "OLOGIC_X2Y139";
+INST "DDR3_SDRAM/DDR3_SDRAM/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_odelay_rsync"   LOC = "IODELAY_X2Y139";
+INST "DDR3_SDRAM/DDR3_SDRAM/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_bufr_rsync"     LOC = "BUFR_X2Y6";
 
 ##################################################################################################
 ##The logic of this pin is used internally to drive a BUFIO for the byte group. Any clock       ##
@@ -317,22 +317,22 @@ NET ETHERNET_TX_ER      LOC = "AH10"  |  IOSTANDARD = "LVCMOS25";
 
 # Set the IDELAY values on the PHY inputs, tuned for this example design.
 # These values should be modified to suit your design.
-INST "*gmii_interface/*.delay_gmii_rx_dv"    IDELAY_VALUE = 27;
-INST "*gmii_interface/*[0].delay_gmii_rxd" IDELAY_VALUE = 23;
-INST "*gmii_interface/*[1].delay_gmii_rxd" IDELAY_VALUE = 29;
-INST "*gmii_interface/*[2].delay_gmii_rxd" IDELAY_VALUE = 29;
-INST "*gmii_interface/*[3].delay_gmii_rxd" IDELAY_VALUE = 25;
-INST "*gmii_interface/*[4].delay_gmii_rxd" IDELAY_VALUE = 27;
-INST "*gmii_interface/*[5].delay_gmii_rxd" IDELAY_VALUE = 29;
-INST "*gmii_interface/*[6].delay_gmii_rxd" IDELAY_VALUE = 30;
-INST "*gmii_interface/*[7].delay_gmii_rxd" IDELAY_VALUE = 30;
-INST "*gmii_interface/*.delay_gmii_rx_er"    IDELAY_VALUE = 20;
+INST "*gmii_interface/*.delay_gmii_rx_dv"   IDELAY_VALUE = 27;
+INST "*gmii_interface/*[0].delay_gmii_rxd"  IDELAY_VALUE = 23;
+INST "*gmii_interface/*[1].delay_gmii_rxd"  IDELAY_VALUE = 29;
+INST "*gmii_interface/*[2].delay_gmii_rxd"  IDELAY_VALUE = 29;
+INST "*gmii_interface/*[3].delay_gmii_rxd"  IDELAY_VALUE = 25;
+INST "*gmii_interface/*[4].delay_gmii_rxd"  IDELAY_VALUE = 27;
+INST "*gmii_interface/*[5].delay_gmii_rxd"  IDELAY_VALUE = 29;
+INST "*gmii_interface/*[6].delay_gmii_rxd"  IDELAY_VALUE = 30;
+INST "*gmii_interface/*[7].delay_gmii_rxd"  IDELAY_VALUE = 30;
+INST "*gmii_interface/*.delay_gmii_rx_er"   IDELAY_VALUE = 20;
 
 # Group all IDELAY-related blocks to use a single IDELAYCTRL
 INST "*dlyctrl"                             IODELAY_GROUP = gmii_idelay;
-INST "*gmii_interface/*.delay_gmii_rx_dv"     IODELAY_GROUP = gmii_idelay;
-INST "*gmii_interface/*[?].delay_gmii_rxd" IODELAY_GROUP = gmii_idelay;
-INST "*gmii_interface/*.delay_gmii_rx_er"     IODELAY_GROUP = gmii_idelay;
+INST "*gmii_interface/*.delay_gmii_rx_dv"   IODELAY_GROUP = gmii_idelay;
+INST "*gmii_interface/*[?].delay_gmii_rxd"  IODELAY_GROUP = gmii_idelay;
+INST "*gmii_interface/*.delay_gmii_rx_er"   IODELAY_GROUP = gmii_idelay;
 
 # Signal trace properties for ML605 Board used in offset in constraints below
 
