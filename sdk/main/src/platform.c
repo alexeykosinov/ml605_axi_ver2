@@ -7,12 +7,25 @@
 #include "lwip/tcp.h"
 #include "arch/cc.h"
 #include "xtmrctr_l.h"
+#include "xuartlite.h"
+#include "xuartlite_l.h"
 
-#define MHZ (66)
-#define TIMER_TLR (25000000*((float)MHZ/100))
-
+#define MHZ 				(66)
+#define TIMER_TLR 			(25000000*((float)MHZ/100))
 
 static XIntc intc;
+static XUartLite uartlite;
+
+static volatile int TotalReceivedCount;
+
+void SendHandler(void *CallBackRef, unsigned int EventData);
+void RecvHandler(void *CallBackRef, unsigned int EventData);
+
+u8* ReceiveBufferPtr = &ReceiveBuffer[0];
+
+//static XUartLite_Stats uart_stats;
+
+
 
 void enable_caches() {
 #ifdef XPAR_MICROBLAZE_USE_ICACHE
@@ -26,10 +39,6 @@ void enable_caches() {
 void disable_caches() {
     Xil_DCacheDisable();
     Xil_ICacheDisable();
-}
-
-void init_uart(){
-
 }
 
 void timer_callback(){
@@ -56,7 +65,14 @@ void microblaze_setup_interrupts() {
 	XIntc *intcp;
 	intcp = &intc;
 
+	XUartLite *xuartlitep;
+	xuartlitep = &uartlite;
+
 	XIntc_Initialize(intcp, XPAR_INTC_0_DEVICE_ID);
+
+
+	XIntc_Connect(intcp, XPAR_INTC_0_UARTLITE_1_VEC_ID, (XInterruptHandler)XUartLite_InterruptHandler, (void *)xuartlitep);
+
 	XIntc_Start(intcp, XIN_REAL_MODE);
 
 	/* Start the interrupt controller */
@@ -64,10 +80,7 @@ void microblaze_setup_interrupts() {
 
 	microblaze_register_handler((XInterruptHandler)XIntc_InterruptHandler, intcp);
 
-    /* 
-    * Setup timer 
-    */ 
-
+    /* Setup timer */ 
 	/* Set the number of cycles the timer counts before interrupting */
 	/* 100 Mhz clock => .01us for 1 clk tick. For 100ms, 10000000 clk ticks need to elapse  */
 	XTmrCtr_SetLoadReg(PLATFORM_TIMER_BASEADDR, 0, TIMER_TLR);
@@ -78,22 +91,41 @@ void microblaze_setup_interrupts() {
 	/* Register Timer handler */
 	XIntc_RegisterHandler(XPAR_INTC_0_BASEADDR, PLATFORM_TIMER_INTERRUPT_INTR,(XInterruptHandler)xadapter_timer_handler, 0);
 
-
-
 	XIntc_Enable(intcp, PLATFORM_TIMER_INTERRUPT_INTR);
 	XIntc_Enable(intcp, XPAR_INTC_0_AXIETHERNET_0_VEC_ID);
+	XIntc_Enable(intcp, XPAR_INTC_0_UARTLITE_1_VEC_ID);
+
+	Xil_ExceptionInit();
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XIntc_InterruptHandler, intcp);
+	Xil_ExceptionEnable();
 
 }
 
-
+void enable_uart() {
+	XUartLite_Initialize(&uartlite, XPAR_UARTLITE_1_DEVICE_ID);
+	XUartLite_SetSendHandler(&uartlite, SendHandler, &uartlite);
+	XUartLite_SetRecvHandler(&uartlite, RecvHandler, &uartlite);
+	XUartLite_EnableInterrupt(&uartlite);
+}
 
 void init_platform() {
     enable_caches();
+	enable_uart(uartlite);
     microblaze_setup_interrupts();
     microblaze_enable_interrupts();
-    init_uart();
 }
 
 void cleanup_platform(){
     disable_caches();
+}
+
+void SendHandler(void *CallBackRef, unsigned int EventData) { }
+
+void RecvHandler(void *CallBackRef, unsigned int EventData) {
+
+	TotalReceivedCount = EventData;
+	if(EventData == RX_BUFF_SIZE) {
+		uart_receive_flag = 1;
+	}
+
 }

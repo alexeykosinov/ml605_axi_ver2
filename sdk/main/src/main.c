@@ -5,18 +5,18 @@
 #include "xgpio.h"
 #include "xparameters.h"
 #include "netif/xadapter.h"
-
+#include <ctype.h>
 
 #define EEPROM_ADDRESS 0x54
 
 XGpio GpioOutput;
-void GPIO_led_test(Xuint16 GpioWidth);
-int EEPROM_test(Xuint32 eeprom_address, Xuint32 page_size);
+void GPIO_led_test(u8 GpioWidth);
+
+u8* CommandPtr = &ReceiveBuffer[0];
+
 
 /* defined by each RAW mode application */
-void print_app_header();
 int start_application();
-int transfer_data();
 
 /* missing declaration in lwIP */
 void lwip_init();
@@ -35,12 +35,11 @@ void print_ip_settings(struct ip_addr *ip, struct ip_addr *mask, struct ip_addr 
 	print_ip("Gateway : ", gw);
 }
 
-
 int main() {
 
 	struct ip_addr ipaddr, netmask, gw;
 
-	/* the MAC address of the board. this should be unique per board */
+	// /* the MAC address of the board. this should be unique per board */
 	unsigned char mac_ethernet_address[] =	{ 0x00, 0x0A, 0x35, 0x02, 0x69, 0xD7 };
 
 	echo_netif = &server_netif;
@@ -48,61 +47,50 @@ int main() {
 	init_platform();
 	print("Hello, asshole!\n\r");
 
-	int i;
-	for(i = 0; i < 6; ++i){
-		xil_printf("%d ", i);
-		msleep(250);
-	}
-	xil_printf("\n\r");
-	xil_printf("UART test done\n\r");
+//	int i;
+//	for(i = 0; i < 6; ++i){
+//		xil_printf("%d ", i);
+//		msleep(450);
+//	}
+//	xil_printf("\n\r");
+//	xil_printf("UART test done\n\r");
 
-	xil_printf("GPIO led test start\n\r");
 	GPIO_led_test(8);
-	xil_printf("GPIO led test done\n\r");
 
-	xil_printf("EEPROM test start\n\r");
-	EEPROM_test(EEPROM_ADDRESS, 16);
-	xil_printf("EEPROM test done\n\r");
+//	xil_printf("EEPROM test done, errors = %d\n\r", eeprom_test(EEPROM_ADDRESS, 16));
 
+	
 
-	u16 DeviceId = 0;
-	u32 TotalErrors = 0;
+//	u16 DeviceId = 0;
+//	u32 TotalErrors = 0;
+//
+//	TotalErrors = MpmcMemTestExample(DeviceId);
+//
+//	if (TotalErrors) {
+//		xil_printf("DDR test finished with error\r\n");
+//	}
+//	else {
+//		xil_printf("DDR test finished successfully\r\n");
+//	}
 
-	TotalErrors = MpmcMemTestExample(DeviceId);
-
-	if (TotalErrors) {
-		xil_printf("DDR test finished with error\r\n");
-	} else {
-		xil_printf("DDR test finished successfully\r\n");
-	}
 
 
 	/* ETHERNET */
 	/* initliaze IP addresses to be used */
-	IP4_ADDR(&ipaddr,  10, 11,   0, 153);
-	IP4_ADDR(&netmask, 255, 255, 255,  0);
-	IP4_ADDR(&gw,      10, 11,   0,  40);
+	IP4_ADDR(&ipaddr,  10, 11, 0, 153);
+	IP4_ADDR(&netmask, 255, 255, 255, 0);
+	IP4_ADDR(&gw,      10, 11, 0, 40);
 
-	print_app_header();
 	print_ip_settings(&ipaddr, &netmask, &gw);
 
 	lwip_init();
 
-  	/* Add network interface to the netif_list, and set it as default */
+ 	/* Add network interface to the netif_list, and set it as default */
 	if (!xemac_add(echo_netif, &ipaddr, &netmask, &gw, mac_ethernet_address, PLATFORM_EMAC_BASEADDR)) {
 		xil_printf("Error adding N/W interface\n\r");
 		return -1;
 	}
 	netif_set_default(echo_netif);
-
-	/* Create a new DHCP client for this interface.
-	 * Note: you must call dhcp_fine_tmr() and dhcp_coarse_tmr() at
-	 * the predefined regular intervals after starting the client.
-	 */
-	/* dhcp_start(echo_netif); */
-
-	/* now enable interrupts */
-	//platform_enable_interrupts();
 
 	/* specify that the network if is up */
 	netif_set_up(echo_netif);
@@ -113,25 +101,18 @@ int main() {
 	/* receive and process packets */
 	while (1) {
 		xemacif_input(echo_netif);
-		transfer_data();
 	}
-  
+
+
 	/* never reached */
 	cleanup_platform();
-
-
-
-
-
-
-
 	return 0;
 }
 
-void GPIO_led_test(Xuint16 GpioWidth) {
+void GPIO_led_test(u8 GpioWidth) {
 
-  Xuint16 LedBit;
-  Xuint16 LedLoop;
+  u8 LedBit;
+  u8 LedLoop;
 
   int numTimes = 6;
 
@@ -151,36 +132,6 @@ void GPIO_led_test(Xuint16 GpioWidth) {
   }
 }
 
-int EEPROM_test(Xuint32 eeprom_address, Xuint32 page_size){
-
-	/* EEPROM TEST*/
-	unsigned bytes_written;
-	unsigned bytes_read;
-	unsigned k,j;
-
-
-	u8 write_buffer[PAGE_SIZE];
-	u8 read_buffer[PAGE_SIZE];
-
-	addr_t address = 125;
-
-	for (k = 0; k < PAGE_SIZE; k++) {
-		write_buffer[k] = k*2;
-		read_buffer[k] = 0;
-	}
-
-	bytes_written = eeprom_write_byte(address, write_buffer, page_size, 0, eeprom_address);
-	if (bytes_written != page_size) return XST_FAILURE;
-
-	bytes_read = eeprom_read_byte(address, read_buffer, page_size, eeprom_address);
-	if (bytes_read != page_size) return XST_FAILURE;
-
-	xil_printf("EEPROM read data:\r\n");
-	for (j = 0; j < bytes_read; ++j){
-		xil_printf("%d : 0x%x\r\n", j, read_buffer[j]);
-	}
-	return XST_SUCCESS;
-}
 
 
 

@@ -3,23 +3,6 @@
 #include "lwip/err.h"
 #include "lwip/tcp.h"
 
-
-
-
-
-
-
-
-
-int transfer_data() {
-	return 0;
-}
-
-void print_app_header() {
-	xil_printf("\n\r\n\r-----lwIP TCP echo server ------\n\r");
-	xil_printf("TCP packets sent to port 7 will be echoed back\n\r");
-}
-
 err_t recv_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err) {
 
 	char str1[100];
@@ -34,20 +17,21 @@ err_t recv_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err) 
 	/* indicate that the packet has been received */
 	tcp_recved(tpcb, p->len);
 
+	/* Convert and print payload recieved from Ethernet DMA */
 	strncpy(str1,p->payload,p->len);
 	str1[p->len] = '\0';
 
-	/* Print payload recieved from Ethernet DMA */
-	xil_printf("Recieved Packet. Length = %d\r\n", p->len);
+	xil_printf("Recieved Packet. Length = %d\n\r", p->len);
 	xil_printf("Recieved Packet. Data = %s\n\r", str1);
-
 
 	/* echo back the payload */
 	/* in this case, we assume that the payload is < TCP_SND_BUF */
 	if (tcp_sndbuf(tpcb) > p->len) {
 		err = tcp_write(tpcb, p->payload, p->len, 1);
-	} else
-		xil_printf("no space in tcp_sndbuf\n\r");
+	} 
+	else {
+		xil_printf("No space in tcp_sndbuf\n\r");
+	}
 
 	/* free the received pbuf */
 	pbuf_free(p);
@@ -73,8 +57,7 @@ err_t accept_callback(void *arg, struct tcp_pcb *newpcb, err_t err)
 }
 
 
-int start_application()
-{
+int start_application() {
 	struct tcp_pcb *pcb;
 	err_t err;
 	unsigned port = 7;
