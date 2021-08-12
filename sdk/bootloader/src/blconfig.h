@@ -1,0 +1,2 @@
+#include "xparameters.h"
+#define FLASH_IMAGE_BASEADDR  (XPAR_LINEAR_FLASH_S_AXI_MEM0_BASEADDR + 0x01200000)

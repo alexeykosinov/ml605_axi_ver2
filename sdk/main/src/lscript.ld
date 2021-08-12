@@ -18,8 +18,8 @@ _HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x400;
 MEMORY
 {
    microblaze_0_i_bram_ctrl_microblaze_0_d_bram_ctrl : ORIGIN = 0x00000050, LENGTH = 0x00007FB0
-   axi_emc_0_S_AXI_MEM0_BASEADDR : ORIGIN = 0x42000000, LENGTH = 0x02000000
-   ddr3_sdram_S_AXI_BASEADDR : ORIGIN = 0xA4000000, LENGTH = 0x04000000
+   linear_flash_S_AXI_MEM0_BASEADDR : ORIGIN = 0x42000000, LENGTH = 0x02000000
+   ddr3_sdram_S_AXI_BASEADDR : ORIGIN = 0xB0000000, LENGTH = 0x10000000
 }
 
 /* Specify the default entry point to the program */
